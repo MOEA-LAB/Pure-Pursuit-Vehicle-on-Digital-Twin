@@ -16,9 +16,9 @@ pure_pursuit::pure_pursuit(ros::NodeHandle &n) : nh(n)
     n.getParam("comm_hub/vehicle/speed", currenV);
     n.getParam("comm_hub/vehicle/route", m_routeFileName);
     n.getParam("comm_hub/vehicle/angle_error", m_angleError);
-    loadRoute(m_routeFileName);
+    loadRoute(m_routeFileName); // 调取路径
 
-    lhd = 0.333 * currenV + 0.3;     //Leading Hold Distance
+    lhd = 0.333 * currenV + 0.3;     //Leading Hold Distance 计算并设置前视距离（Leading Hold Distance），计算公式为 0.333 * currenV + 0.3。
     printf("lhd: %f\n", lhd);
 
     // 订阅节点
@@ -28,8 +28,8 @@ pure_pursuit::pure_pursuit(ros::NodeHandle &n) : nh(n)
     ctrl_speed_pub = n.subscribe("/ctrl_speed", 10, &pure_pursuit::ctrl_speed_callback, this);
     ctrl_switch_mode_pub = n.subscribe("/ctrl_switch_mode", 10, &pure_pursuit::ctrl_switch_mode_callback, this);
 
-    imu_sub = n.subscribe("/imu", 10, &pure_pursuit::_ImuCallback, this);
-    odom_sub = n.subscribe("/odom", 10, &pure_pursuit::_OdomCallback, this);
+    imu_sub = n.subscribe("/imu", 10, &pure_pursuit::_ImuCallback, this); // 用于获取车辆的姿态（包括滚转角、俯仰角和偏航角），主要用于确定车辆的方向和角速度。
+    odom_sub = n.subscribe("/odom", 10, &pure_pursuit::_OdomCallback, this); // 用于获取车辆的位置信息和运动状态，主要用于确定车辆的位置和线速度。
 
     // 发布控制节点
     control_pub = n.advertise<geometry_msgs::TwistStamped>("/cmd_vel", 10, true);
@@ -40,10 +40,13 @@ pure_pursuit::pure_pursuit(ros::NodeHandle &n) : nh(n)
 pure_pursuit::~pure_pursuit()
 {
 }
+
+// 全剧位置的回调函数（可加入避障）
 void pure_pursuit::vrpnCallback_all(const serial_ros::PoseMsgs &msg)
 {
 }
 
+// 自身位置的回调函数
 void pure_pursuit::vrpnCallback(const geometry_msgs::PoseWithCovarianceStamped &msg)
 {
     tf::Quaternion quat;
