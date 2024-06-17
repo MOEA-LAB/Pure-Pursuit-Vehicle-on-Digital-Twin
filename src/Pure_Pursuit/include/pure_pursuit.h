@@ -58,6 +58,7 @@ private:
     void vrpnCallback(const geometry_msgs::PoseWithCovarianceStamped &msg);
     void vrpnCallback_all(const serial_ros::PoseMsgs &msg);
     void collision_avoid_ctrl_Callback(const std_msgs::UInt32::ConstPtr &msg);
+    void avoidObstacle(double other_x, double other_y);
 
     void ekfStateCallback(const nav_msgs::OdometryConstPtr &msg);
     void ctrl_run_callback(const std_msgs::Bool::ConstPtr &msg);
@@ -78,6 +79,7 @@ private:
     float m_y;
     float m_yaw;
     float deta_u0=0;
+    int m_vehicleId;
 
     std::string m_nodeName;
     std::string m_vehicleName;
