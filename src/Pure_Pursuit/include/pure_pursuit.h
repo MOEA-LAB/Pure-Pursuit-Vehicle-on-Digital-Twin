@@ -13,6 +13,10 @@
 
 #include <thread>
 #include <chrono>
+#include "geometry_msgs/Quaternion.h"
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf2/LinearMath/Matrix3x3.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
 #include "serial_ros/PoseMsgs.h"
 struct OutPut {
@@ -58,7 +62,6 @@ private:
     void vrpnCallback(const geometry_msgs::PoseWithCovarianceStamped &msg);
     void vrpnCallback_all(const serial_ros::PoseMsgs &msg);
     void collision_avoid_ctrl_Callback(const std_msgs::UInt32::ConstPtr &msg);
-    void avoidObstacle(double other_x, double other_y);
 
     void ekfStateCallback(const nav_msgs::OdometryConstPtr &msg);
     void ctrl_run_callback(const std_msgs::Bool::ConstPtr &msg);
@@ -72,6 +75,8 @@ private:
     std::thread controlPubThread_;
     void _controlPub();
 
+    int m_vehicleId;//当前车ID
+
     float baseAngle = -10;
     float imu[5];
     float odom[5];
@@ -79,7 +84,6 @@ private:
     float m_y;
     float m_yaw;
     float deta_u0=0;
-    int m_vehicleId;
 
     std::string m_nodeName;
     std::string m_vehicleName;
@@ -97,10 +101,15 @@ private:
     double cmd_vel_angular;
 
     ArcLengthSpline track_;
+    //全部智能车信息
+    serial_ros::PoseMsgs CarsInfo;
+    const double pi = 3.1415926535897;
 
     OutPut calcPurePursuit(const State& state,Eigen::Vector2d targetPos);
-
+          
     void loadRoute(std::string filePath);
+    double quaternionToYaw(const geometry_msgs::Quaternion& quat);
+    bool PointInSector(double x, double y, double x1, double y1, double yaw);
 };
 
 #endif

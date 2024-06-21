@@ -4,6 +4,6 @@ server:
 vehicle:
   name: "Car84"
   debug: false
-  speed: 1.5
-  route: "/home/firefly/class/Experiment3/src/Pure_Pursuit/routes/Big.json"
+  speed: 2
+  route: "/home/firefly/class/work_car/src/Pure_Pursuit/routes/my_path.json"
   angle_error: 0
