@@ -1,8 +1,0 @@
-{
-    "files.associations": {
-        "*.tmpl": "html",
-        "*.tcc": "cpp",
-        "fstream": "cpp",
-        "thread": "cpp"
-    }
-}
